@@ -14,8 +14,9 @@ const getMessages = (req,res,next) => {
 };
 
 const postMessage = (req,res,next) => {
-    let message = req.body.message;
+    const message = req.body.message;
     let name = req.body.name;
+
     if(!message || message.length === 0 || !name || name.length === 0){
         res.json(404);
     }
