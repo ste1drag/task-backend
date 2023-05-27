@@ -2,37 +2,34 @@ const express = require('express');
 const router = express.Router();
 const connection = require('../config/db.config');
 
-router.post('/messages', function(req,res,next){
+router.post('/', function(req,res,next){
     let message = req.body.message;
     let name = req.body.name;
     if(!message || message.length === 0 || !name || name.length === 0){
-        res.json(400);
+        res.json(404);
     }
 
-    connection.query('INSERT INTO messages SET ?', { message,name, send_date: Date.now() }, function (error,result){
+    connection.query('INSERT INTO guestbook.review SET ?', { message,name, send_date: new Date(Date.now())}, function (error,result){
         if(error){
-            res.json(400);
+            console.log(error);
+            res.json(404);
         }
         res.json(200);
     });
 
 });
 
-router.get('/messages',function(req,res,next){
-    connection.query('SELECT * FROM  ORDER BY 2 desc LIMIT 10',function(err,rows){
+router.get('/',function(req,res,next){
+    connection.query('SELECT * FROM guestbook.review ORDER BY 2 desc LIMIT 10',function(err,rows){
         if(err){
-            req.json(400);
+            console.log(err);
+            res.json(404);
         } else {
-            const data = [];
             console.log(rows);
-            for (const row of rows){
-                data.push({
-                    "message":row.message,
-                    "name": row.name
-                });
-            }
-            res.json(data);
+            res.json(rows);
         }
 
     });
 });
+
+module.exports = router;
